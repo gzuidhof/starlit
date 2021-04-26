@@ -1,0 +1,21 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+*/
+
+@font-face {
+  font-family: "Inter var";
+  font-weight: 200 900;
+  font-display: swap;
+  src: local("Inter var"), url(../fonts/inter.var.woff2) format("woff2");
+}
+
+@import "./custom.scss";
+@import "./bootstrap-lite";
+@import "./bootstrap-icons";
+@import "./starlit.scss";
+@import "./components/appbar.scss";
+
+:root {
+    --bs-font-sans-serif: "Inter var", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}

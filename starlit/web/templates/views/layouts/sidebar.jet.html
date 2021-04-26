@@ -1,0 +1,16 @@
+{* Layout with sidebar *}
+{{extends "../layouts/base"}}
+
+{{import "../partials/appbar"}}
+
+{{block documentBody()}}
+  <div class="app">
+    {{ if appbar.enabled }}
+    {{yield appbar()}}
+    {{end}}
+    <main>
+      {{yield main()}}
+    </main>
+    {{yield footer()}}
+  </div>
+{{end}}

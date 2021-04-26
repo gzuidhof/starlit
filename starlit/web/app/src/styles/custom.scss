@@ -1,0 +1,31 @@
+$brand-color: #5e5ef8;
+$primary: $brand-color;
+
+
+$headings-font-weight: 700;
+
+
+$grid-breakpoints: (
+  xs: 0,
+//   sm: 576px,
+  md: 768px,
+  // lg: 992px,
+  xl: 1200px,
+//   xxl: 1400px
+);
+
+$container-max-widths: (
+//   sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+//   xxl: 1320px
+);
+
+$font-size-base:              1rem !default;
+$h1-font-size:                $font-size-base * 3.8;
+$h2-font-size:                $font-size-base * 2.9;
+$h3-font-size:                $font-size-base * 2.2;
+$h4-font-size:                $font-size-base * 1.75;
+$h5-font-size:                $font-size-base * 1.35;
+$h6-font-size:                $font-size-base;

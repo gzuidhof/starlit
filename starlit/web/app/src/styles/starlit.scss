@@ -1,0 +1,49 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+*/
+
+body, html {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+h1 {
+    letter-spacing: -0.05em;
+}
+
+h2, h3 {
+    letter-spacing: -0.03em;
+}
+
+h4, h5 {
+    letter-spacing: -0.02em;
+}
+
+.app {
+    display: grid;
+    grid-template-areas:
+    "appbar header"
+    "appbar main"
+    "footer footer";
+    grid-template-rows: minmax(0, min-content) auto auto;
+    grid-template-columns: min-content auto;
+}
+
+.app main {
+    grid-area: main;
+}
+
+.app footer {
+    grid-area: footer;
+    
+}
+
+.btn-icon {
+    border-radius: 100%;
+    line-height: 1;
+}
+
+.no-border {
+    border: 0 !important;
+}

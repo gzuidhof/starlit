@@ -1,0 +1,14 @@
+before:
+  hooks:
+    - go generate
+builds:
+  - binary: starlit
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+     - -s -w -X github.com/gzuidhof/starlit/starlit/cmd.version={{.Version}} -X github.com/gzuidhof/starlit/starlit/cmd.commit={{.Commit}} -X github.com/gzuidhof/starlit/starlit/cmd.date={{.CommitDate}} -X github.com/gzuidhof/starlit/starlit/cmd.target={{.Env.GOOS}}

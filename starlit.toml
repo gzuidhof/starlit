@@ -1,0 +1,17 @@
+title = "Starlit"
+
+[appbar]
+  enabled = false
+
+# The output directory for the `starlit render` command.
+[render]
+  output_folder = "dist"
+
+[app.home]
+  path = "/"
+  type = "pages"
+
+[app.docs]
+  path = "/docs/"
+  type = "book"
+  title = "Starlit Documentation"

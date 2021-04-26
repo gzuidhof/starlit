@@ -1,0 +1,66 @@
+.appbar {
+    grid-area: appbar;
+    position: relative;
+    
+    min-height: 100vh;
+
+    .inner {
+        display: flex;
+        flex-direction: column;
+
+        overflow-x: hidden;
+        background-color: white;
+        border-right: 1px solid #eee;
+        transition: width 100ms ease-out;
+        width: 240px;
+        height: 100%;
+    }
+
+
+    &.collapsed {
+        width: calc(2rem + 19px);
+
+        .inner {
+            position: absolute;
+            width: calc(2rem + 19px);
+        }
+        &:hover {
+            .inner {
+                width: 240px;
+                box-shadow: 0px 0px 11px 0px #0002;
+            }
+        }
+    }
+
+    header {
+        height: 64px;
+    }
+
+    .bi {
+        font-size: 19px;
+    }
+
+    .btn:hover {
+        background-color: #fafafa;
+    }
+}
+
+.appbar-menu {
+    list-style: none;
+    padding: 0;
+
+    li {
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+    }
+
+    li:hover {
+        background-color: #eee;
+    }
+
+    .bi {
+        font-size: 20px;
+    }
+}

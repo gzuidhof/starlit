@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "module": "esnext",
+        "target": "es2018",
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "moduleResolution": "node",
+        "alwaysStrict": true,
+        "strict": true,
+        "preserveConstEnums": true,
+        "forceConsistentCasingInFileNames": true,
+        "sourceMap": true,
+        "importHelpers": false,
+        "esModuleInterop": true,
+        "resolveJsonModule": true
+    },
+    "include": [
+        "./src/**/*.ts",
+        "./test/**/*.ts",
+    ],
+    "exclude": [
+        "node_modules/",
+        "dist/"
+    ]
+}

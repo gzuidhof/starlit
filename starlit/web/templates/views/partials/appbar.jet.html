@@ -1,0 +1,31 @@
+{{block _appbarEntry(href, title, icon)}}
+<li>
+    <a href="{{ href }}" title="{{ title }}">
+        <div class="d-flex ps-3 py-1 align-items-center">
+            <i class="{{ icon }} me-3"></i>
+            <span>{{ title }}</span>
+        </div>
+    </a>
+</li>
+{{end}}
+
+{{block appbar()}}
+<nav class="appbar">
+    <div class="inner text-muted">
+
+    <header class="d-flex align-items-center text-decoration-none ps-3">
+        <div class="d-flex align-items-center mb-2 mb-lg-0 ">
+            <button onclick="document.querySelector('.appbar').classList.toggle('collapsed')" class="btn btn-icon p-0 me-3 border-0">
+                <i class="bi bi-list"></i>
+            </button>
+            <h1 class="m-0 h6"><a class="text-decoration-none" href="/">Starlit</a></h1>
+        </a>
+    </header>
+    
+    <ul class="appbar-menu">
+        {{yield _appbarEntry(href="/", title="Home", icon="bi bi-stars")}}
+        {{yield _appbarEntry(href="/docs", title="Documentation", icon="bi bi-file-code")}}
+    </ul>
+    </div>
+</nav>
+{{end}}

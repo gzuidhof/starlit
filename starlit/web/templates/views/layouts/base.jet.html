@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="generator" content="Starlit">
+  <meta name="themeColor" content={{ isset(themeColor) ? themeColor : "#5e5ef8" }}>
+
+  <title>{{ isset(title) ? title : "Starlit" }}</title>  
+
+  <link rel="stylesheet" href="/static/styles/app.css">
+  <link rel="icon" href="/static/images/favicon-32x32.png">
+
+  <link rel="preload" href="/static/fonts/inter.var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/bootstrap-icons.woff2" as="font" type="font/woff2" crossorigin>
+  
+  {{block head()}}{{end}}
+</head>
+
+<body>
+  {{yield documentBody()}}
+
+  <script src="/static/js/app.js" async defer></script>
+  {{block bodyEnd()}}{{end}}
+</body>
+
+</html>
