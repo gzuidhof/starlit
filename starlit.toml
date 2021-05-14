@@ -13,5 +13,5 @@ title = "Starlit"
 
 [app.docs]
   path = "/docs/"
-  type = "book"
+  type = "pages"
   title = "Starlit Documentation"

@@ -1,0 +1,18 @@
+{{extends "./base"}}
+
+{{block main()}}
+    <starboard-embed style="flex-grow: 1">
+      <iframe src="{{sandboxUrl}}" style="width: 100%" frameborder="0"></iframe>
+    </starboard-embed>
+  
+    <script type="module">
+      import {StarboardEmbed} from "/static/vendor/starboard-wrap@0.3.0/dist/index.min.js";
+       const el = document.querySelector("starboard-embed");
+        el.sendMessage({
+          type: "NOTEBOOK_SET_INIT_DATA",
+          payload: {
+              content: "{{writeJson(notebookContent)}}"
+          }
+        })
+    </script>
+{{end}}

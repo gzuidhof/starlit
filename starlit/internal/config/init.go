@@ -28,6 +28,7 @@ func InitConfig(cfgFile string) {
 		}
 
 		// Search config in home directory with name "starlit" (without extension).
+		viper.AddConfigPath(".")
 		viper.AddConfigPath(home)
 		viper.SetConfigName("starlit")
 

@@ -8,13 +8,14 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/jet"
+	"github.com/gzuidhof/starlit/starlit/internal/format"
 	"github.com/gzuidhof/starlit/starlit/internal/fs/assetfs"
 	"github.com/gzuidhof/starlit/starlit/internal/templaterenderer"
 	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 )
 
-func CreateApp(serveFS assetfs.ServeFS, reloadTemplates bool) *fiber.App {
+func CreateApp(name string, serveFS assetfs.ServeFS, reloadTemplates bool) *fiber.App {
 	engine := jet.NewFileSystem(afero.NewHttpFs(serveFS.Templates), ".jet.html")
 
 	engine.Reload(reloadTemplates)
@@ -27,11 +28,12 @@ func CreateApp(serveFS assetfs.ServeFS, reloadTemplates bool) *fiber.App {
 		"enabled": viper.GetBool("appbar.enabled"),
 	})
 
+	engine.AddFunc("renderMarkdown", format.MarkdownToHTML)
+
 	renderer := templaterenderer.NewRenderer(engine)
 	app := fiber.New(fiber.Config{CaseSensitive: true, DisableStartupMessage: true})
-	b := NewBookHandler(renderer)
+	b := NewPagesHandler(name, renderer)
 	app.Get("/:path?+", b.Handle)
 
-	// _ := &BookHandler{}
 	return app
 }

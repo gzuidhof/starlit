@@ -1,0 +1,9 @@
+{{extends "./base"}}
+
+{{block main()}}
+    <div class="container my-3">
+      <article class="row">
+        {{ raw(renderMarkdown(markdownContent)) }}
+      </article>
+    </div>
+{{end}}

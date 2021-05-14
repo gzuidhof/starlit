@@ -25,7 +25,7 @@ async function buildStyles(config) {
       file: cssEntryFile,
       outputStyle: config.debug ? 'expanded' : 'compressed',
     });
-  } catch(e) {
+  } catch (e) {
     console.error(e);
     return;
   }
@@ -33,17 +33,18 @@ async function buildStyles(config) {
   try {
     await writeFile(cssTargetFile, result.css)
     console.log(chalk.greenBright(`Wrote ${cssTargetFile}`))
-  } catch(e) {
+  } catch (e) {
     console.warn(chalk.yellow(`Could not write ${cssTargetFile}`))
   }
 
   return result.stats.includedFiles;
 }
 
-(async function() {
+(async function () {
   await remove("dist");
 
-  await copy("static", "dist/static", {recursive: true, overwrite: true})
+  await copy("static", "dist/static", { recursive: true, overwrite: true })
+  await copy("static", "dist/static", { recursive: true, overwrite: true })
   await mkdir("dist/static/styles");
 
   // Build client bundle
@@ -52,19 +53,19 @@ async function buildStyles(config) {
     outfile: "dist/static/js/app.js",
     bundle: true,
     define: {
-      "process.env.NODE_ENV": "production", 
+      "process.env.NODE_ENV": "production",
     },
     define: {
-        VERSION: `"${version}"`, 
-        BUILT_AT: `"${buildTime}"`,
+      VERSION: `"${version}"`,
+      BUILT_AT: `"${buildTime}"`,
     },
     onStart: async (config, changedFiles, context) => {
       const isInitialBuild = changedFiles.length === 0;
       if (isInitialBuild) {
 
         try {
-          await copy("static", "dist/static", {recursive: true});
-        } catch(e) {
+          await copy("static", "dist/static", { recursive: true });
+        } catch (e) {
           console.warn(chalk.yellow("Could not remove existing dist folder and copy static assets (maybe you are running wrangler dev?)"))
         }
 

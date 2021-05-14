@@ -23,6 +23,6 @@ func startPrimaryServer(serveFolderAbs string, serveFS assetfs.ServeFS, port str
 	app.Use("/static/*", filesystem.New(filesystem.Config{
 		Root: afero.NewHttpFs(stripprefix.New("/static/", serveFS.Static)),
 	}))
-	app.Mount("/", pages.CreateApp(serveFS, true))
+	app.Mount("/", pages.CreateApp("", serveFS, true))
 	return app.Listen(":" + port)
 }

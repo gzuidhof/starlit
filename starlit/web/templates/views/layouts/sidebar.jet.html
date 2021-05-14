@@ -7,10 +7,13 @@
   <div class="app">
     {{ if appbar.enabled }}
     {{yield appbar()}}
-    {{end}}
-    <main>
-      {{yield main()}}
-    </main>
+    {{end}}    
+    
+      <main class="d-flex">
+        {{yield sidebar()}}
+        {{yield main()}}
+      </main>
+
     {{yield footer()}}
   </div>
 {{end}}
