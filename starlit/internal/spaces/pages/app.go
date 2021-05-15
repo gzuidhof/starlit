@@ -33,7 +33,7 @@ func CreateApp(name string, serveFS assetfs.ServeFS, reloadTemplates bool) *fibe
 	renderer := templaterenderer.NewRenderer(engine)
 	app := fiber.New(fiber.Config{CaseSensitive: true, DisableStartupMessage: true})
 	b := NewPagesHandler(name, renderer)
-	app.Get("/:path?+", b.Handle)
+	app.Get("/:filepath?+", b.Handle)
 
 	return app
 }

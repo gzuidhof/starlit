@@ -1,0 +1,7 @@
+---
+my_prefix:
+  my_field: notebook
+weight: 1
+---
+# %% [javascript]
+console.log("hello world");

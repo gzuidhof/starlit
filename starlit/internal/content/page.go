@@ -1,7 +1,10 @@
-package pages
+package content
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 	"strings"
 
 	"github.com/gzuidhof/starlit/starlit/internal/parser"
@@ -18,12 +21,12 @@ const (
 	JetTemplate PageType = "jet"
 	HTML        PageType = "html"
 	Notebook    PageType = "notebook"
+	Unknown PageType = "unknown"
 )
 
 type Page struct {
 	Type                      PageType
 	Content                   []byte
-
 
 	FrontMatter               *viper.Viper
 	ContentWithoutFrontmatter []byte
@@ -37,16 +40,33 @@ type Page struct {
 	Weight int
 }
 
-func ReadPageFile(path string, file afero.File) (Page, error) {
-	filename := file.Name()
+func determineFileType(filename string) PageType {
+	ext := strings.ToLower(filepath.Ext(filename))
 
-	var b []byte
-	_, err := file.Read(b)
+	if ext == ".md" || ext == ".markdown" {
+		return Markdown
+	} else if ext == ".html" {
+		if strings.Contains(filename, ".jet.html") {
+			return JetTemplate
+		} 
+		return HTML
+	} else if ext == ".sb" || ext == ".nb" || ext == ".sbnb" {
+		return Notebook
+	} else if ext == ".jet" {
+		return JetTemplate
+	}
+	return Unknown
+}
+
+func ReadPageFile(path string, file afero.File) (Page, error) {
+	filename := filepath.Base(file.Name())
+
+	b, err := ioutil.ReadAll(file)
 	if err != nil {
 		return Page{}, fmt.Errorf("failed to read file %s in pages %v", filename, err)
 	}
 
-	cmf, err := parser.ParseFile(file)
+	cmf, err := parser.ParseFile(bytes.NewReader(b))
 	if err != nil {
 		return Page{}, fmt.Errorf("failed to parse file %s in pages %v", filename, err)
 	}
@@ -57,19 +77,16 @@ func ReadPageFile(path string, file afero.File) (Page, error) {
 	frontMatter.MergeConfigMap(cmf.FrontMatter)
 
 	return Page{
-		Type: Markdown,
+		Type: determineFileType(filename),
 		Content: b,
 		FrontMatter: frontMatter,
 		ContentWithoutFrontmatter: cmf.Content,
-
 		
 		Path: path,
 		PathWithoutExtension: strings.Split(path, ".")[0],
 
 		Filename: filename,
 		FilenameWithoutExtension: strings.Split(filename, ".")[0],
-
-
 		Weight: frontMatter.GetInt("weight"),
 
 	}, nil

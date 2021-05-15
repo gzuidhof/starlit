@@ -3,7 +3,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package config
 
-import "github.com/spf13/viper"
+import (
+	"path"
+
+	"github.com/spf13/viper"
+)
+
 
 func GetSpaceConfig(spaceName string, parentConfig *viper.Viper) *viper.Viper {
 	vconfig := viper.New()
@@ -17,6 +22,8 @@ func GetSpaceConfig(spaceName string, parentConfig *viper.Viper) *viper.Viper {
 		if spaceConfig != nil {
 			vconfig.MergeConfigMap(spaceConfig.AllSettings())
 		}
+
+		vconfig.Set("serve_filepath", path.Join(parentConfig.GetString("serve_filepath"), "path"))
 	}
 
 	return vconfig

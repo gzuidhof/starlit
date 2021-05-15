@@ -15,12 +15,14 @@ import (
 func Start(servePath string) {
 	portPrimary := viper.GetString("port")
 	portSecondary := viper.GetString("port_secondary")
+	
 	serveFolder := servePath
 	serveFolderAbs, err := filepath.Abs(serveFolder)
 	if err != nil {
 		log.Fatalf("Invalid serve folder, could not get absolute path: %v", err)
 	}
 
+	viper.Set("serve_filepath", serveFolderAbs)
 	serveFS := assetfs.GetAssetFileSystems()
 
 	done := make(chan bool)
@@ -33,5 +35,4 @@ func Start(servePath string) {
 	log.Printf("\nListening on :%v (and :%s for sandboxing)\nhttp://localhost:%v", portPrimary, portSecondary, portPrimary)
 
 	<-done
-
 }

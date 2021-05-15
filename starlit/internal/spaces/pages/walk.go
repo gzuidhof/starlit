@@ -3,11 +3,12 @@ package pages
 import (
 	"io/fs"
 
+	"github.com/gzuidhof/starlit/starlit/internal/content"
 	"github.com/spf13/afero"
 )
 
-
-func walkFolder(root string, filesystem afero.Afero) error {
+// TODO
+func walkFolder(root string, filesystem afero.Afero) ([]content.Page, error) {
 
 	filesystem.Walk(root, func(path string, info fs.FileInfo, err error) error {
 		if err != nil { // Error related to a directory it can't walk into
@@ -17,5 +18,5 @@ func walkFolder(root string, filesystem afero.Afero) error {
 		return nil
 	})
 
-	return nil
+	return nil, nil
 }

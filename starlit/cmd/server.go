@@ -21,7 +21,6 @@ var serverCmd = &cobra.Command{
 		if len(args) < 1 {
 			log.Fatal("Please specify a path to serve")
 		}
-
 		server.Start(args[0])
 	},
 }

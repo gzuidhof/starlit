@@ -6,12 +6,12 @@
     </starboard-embed>
   
     <script type="module">
-      import {StarboardEmbed} from "/static/vendor/starboard-wrap@0.3.0/dist/index.min.js";
+      import {StarboardEmbed} from "/static/vendor/starboard-wrap@0.3.1/dist/index.min.js";
        const el = document.querySelector("starboard-embed");
         el.sendMessage({
           type: "NOTEBOOK_SET_INIT_DATA",
           payload: {
-              content: "{{writeJson(notebookContent)}}"
+              content: `{{raw(page.Content)}}`
           }
         })
     </script>

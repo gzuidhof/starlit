@@ -4,7 +4,7 @@
 
 package main
 
-//go:generate go run scripts/download_runtime/main.go starboard-notebook 0.9.3 web/app/static/vendor
+//go:generate go run scripts/download_runtime/main.go starboard-notebook 0.9.4 web/app/static/vendor
 //go:generate go run scripts/download_runtime/main.go starboard-wrap 0.3.1 web/app/static/vendor
 
 import (

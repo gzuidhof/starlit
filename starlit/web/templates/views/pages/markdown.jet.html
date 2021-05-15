@@ -3,7 +3,7 @@
 {{block main()}}
     <div class="container my-3">
       <article class="row">
-        {{ raw(renderMarkdown(markdownContent)) }}
+        {{ raw(renderMarkdown(page.ContentWithoutFrontmatter)) }}
       </article>
     </div>
 {{end}}
