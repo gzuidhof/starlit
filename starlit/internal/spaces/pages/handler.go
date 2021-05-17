@@ -10,9 +10,12 @@ import (
 	"github.com/gzuidhof/starlit/starlit/internal/config"
 	"github.com/gzuidhof/starlit/starlit/internal/content"
 	"github.com/gzuidhof/starlit/starlit/internal/templaterenderer"
+	"github.com/gzuidhof/starlit/starlit/web"
 	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 )
+
+var defaultSandboxUrl = fmt.Sprintf("/static/vendor/%s/dist/index.html", web.GetVendoredPackage("starboard-notebook"))
 
 type PagesHandler struct {
 	templaterenderer.TemplateRenderer
@@ -33,7 +36,7 @@ func NewPagesHandler(spaceName string, templateRenderer templaterenderer.Templat
 
 func (h *PagesHandler) renderNotebookPage(c *fiber.Ctx, page content.Page) error {
 	return h.Render(c, "views/pages/notebook", fiber.Map{
-		"sandboxUrl": "/static/vendor/starboard-notebook@0.9.4/dist/index.html",
+		"sandboxUrl": defaultSandboxUrl,
 		"page": page,
 	})
 }

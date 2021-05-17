@@ -56,13 +56,14 @@ func main() {
 		// Possible improvement: create a "keep-these-files" function.. we really only need one file
 		deleteUselessFiles(packageFolder, []string{
 			".github",
-			"dist/index.iife.js", // Some large markdown files we really don't have to statically bundle
+			"dist/index.iife.js",
 			"dist/index.js",
 			"dist/index.cjs",
 			"dist/index.d.ts",
 			"dist/embed.d.ts",
 			"examples",
 			"src",
+			"test",
 			"README.md",
 			"rollup.config.js",
 			"tsconfig.json",

@@ -6,13 +6,26 @@
     </starboard-embed>
   
     <script type="module">
-      import {StarboardEmbed} from "/static/vendor/starboard-wrap@0.3.1/dist/index.min.js";
-       const el = document.querySelector("starboard-embed");
-        el.sendMessage({
-          type: "NOTEBOOK_SET_INIT_DATA",
-          payload: {
-              content: `{{raw(page.Content)}}`
+      import {StarboardEmbed} from "/static/vendor/{{getVendoredPackage("starboard-wrap")}}/dist/index.min.js";
+
+      function decodeBase64(base64) {
+          const text = atob(base64);
+          const length = text.length;
+          const bytes = new Uint8Array(length);
+          for (let i = 0; i < length; i++) {
+              bytes[i] = text.charCodeAt(i);
           }
-        })
+          const decoder = new TextDecoder();
+          return decoder.decode(bytes);
+      }
+      const b64Content = {{writeJson(page.Content)}}
+
+      const el = document.querySelector("starboard-embed");
+      el.sendMessage({
+        type: "NOTEBOOK_SET_INIT_DATA",
+        payload: {
+            content: decodeBase64(b64Content)
+        }
+      })
     </script>
 {{end}}

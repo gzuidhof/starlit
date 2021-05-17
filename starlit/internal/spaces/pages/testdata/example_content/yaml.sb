@@ -4,4 +4,7 @@ my_prefix:
 weight: 1
 ---
 # %% [javascript]
-console.log("hello world");
+console.log(`hello` + ' ' + "world");
+
+# %% [html]
+<b>Bold text</b> 😀

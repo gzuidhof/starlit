@@ -11,6 +11,7 @@ import (
 	"github.com/gzuidhof/starlit/starlit/internal/format"
 	"github.com/gzuidhof/starlit/starlit/internal/fs/assetfs"
 	"github.com/gzuidhof/starlit/starlit/internal/templaterenderer"
+	"github.com/gzuidhof/starlit/starlit/web"
 	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 )
@@ -29,6 +30,7 @@ func CreateApp(name string, serveFS assetfs.ServeFS, reloadTemplates bool) *fibe
 	})
 
 	engine.AddFunc("renderMarkdown", format.MarkdownToHTML)
+	engine.AddFunc("getVendoredPackage", web.GetVendoredPackage)
 
 	renderer := templaterenderer.NewRenderer(engine)
 	app := fiber.New(fiber.Config{CaseSensitive: true, DisableStartupMessage: true})

@@ -1,6 +1,0 @@
-# %% [markdown]
-# Hello world
-
-This is an example notebook file :)
-# %% [javascript]
-console.log("Hello!");
