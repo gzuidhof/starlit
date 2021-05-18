@@ -19,7 +19,6 @@
 <body>
     <noscript>You need to have Javascript enabled to view this notebook.</noscript>
     <script>
-        {{ isset(notebookContent) ? "window.initialNotebookContent = " + notebookContent : "" }}
         window.starboardArtifactsUrl = "{{cdn}}"
     </script>
     <script src="{{cdn}}/starboard-notebook.js"></script>

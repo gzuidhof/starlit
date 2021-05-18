@@ -5,6 +5,5 @@ weight: 1
 ---
 # %% [javascript]
 console.log(`hello` + ' ' + "world");
-
 # %% [html]
 <b>Bold text</b> 😀
