@@ -1,17 +1,25 @@
 title = "Starlit"
+reload = true
 
 [appbar]
-  enabled = false
+  enabled = true
 
 # The output directory for the `starlit render` command.
 [render]
   output_folder = "dist"
 
-[app.home]
+[spaces.home]
   path = "/"
   type = "pages"
+  title = "Starlit"
+  name = "Home"
+  icon = "bi bi-stars"
 
-[app.docs]
+[spaces.home.sidebar]
+  enabled = false
+
+[spaces.docs]
   path = "/docs/"
   type = "pages"
   title = "Starlit Documentation"
+  icon = "bi bi-book"

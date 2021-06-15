@@ -1,0 +1,32 @@
+{{block _sidebarEntry(entry, depth)}}
+<li>
+   {{if isset(entry.Page) && len(entry.Page.ContentWithoutFrontmatter) > 0}}
+    <a class="sidebar-item depth-{{depth}}" href="{{ entry.Href }}" title="{{ entry.Title() }}">
+              {{ entry.Name }}
+    </a>
+    {{else}}
+    <div class="sidebar-item depth-{{depth}}">
+        {{ entry.Title() }}
+      </div>
+    {{end}}
+
+    {{if len(entry.Children) > 0}}
+     <ul class="mb-1">
+      {{ range entry.Children }}
+        {{yield _sidebarEntry(entry=., depth=depth+1)}}
+      {{ end}}
+      </ul>
+    {{end}}
+
+</li>
+{{end}}
+
+{{block sidebar()}}
+  <nav class="pages-sidebar">
+    <ul>
+      {{ range menu.Entries }}
+            {{yield _sidebarEntry(entry=., depth=0)}}
+      {{ end }}
+    </ul>
+  </nav>
+{{end}}

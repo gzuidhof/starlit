@@ -44,7 +44,25 @@ type Page struct {
 	Weight int
 }
 
-func determineFileType(filename string) PageType {
+func (p *Page) LinkTitle() string {
+	linkTitle := p.FrontMatter.GetString("link_title")
+	if (linkTitle != "") {
+		return linkTitle
+	}
+	return p.Title()
+}
+
+func (p *Page) Title() string {
+
+	title := p.FrontMatter.GetString("title")
+	if (title == "") {
+		return p.FilenameWithoutExtension
+	}
+
+	return title
+}
+
+func DetermineContentFileType(filename string) PageType {
 	ext := strings.ToLower(filepath.Ext(filename))
 
 	if ext == ".md" || ext == ".markdown" {
@@ -63,6 +81,8 @@ func determineFileType(filename string) PageType {
 }
 
 func ReadPageFile(path string, file afero.File) (Page, error) {
+	// Replace OS specific file separators with / only and ensure prefix /
+	path = filepath.ToSlash("/" + path)
 	filename := filepath.Base(file.Name())
 
 	b, err := ioutil.ReadAll(file)
@@ -74,6 +94,11 @@ func ReadPageFile(path string, file afero.File) (Page, error) {
 	if err != nil {
 		return Page{}, fmt.Errorf("failed to parse file %s in pages %v", filename, err)
 	}
+
+	contentWithoutFrontmatter := cmf.Content
+	if cmf.FrontMatterFormat == "" {
+		contentWithoutFrontmatter = b
+	}
 	
 	frontMatter := viper.New()
 	frontMatter.SetConfigType(string(cmf.FrontMatterFormat))
@@ -81,10 +106,10 @@ func ReadPageFile(path string, file afero.File) (Page, error) {
 	frontMatter.MergeConfigMap(cmf.FrontMatter)
 
 	return Page{
-		Type: determineFileType(filename),
+		Type: DetermineContentFileType(filename),
 		Content: b,
 		FrontMatter: frontMatter,
-		ContentWithoutFrontmatter: cmf.Content,
+		ContentWithoutFrontmatter: contentWithoutFrontmatter,
 		
 		Path: path,
 		PathWithoutExtension: strings.Split(path, ".")[0],

@@ -17,6 +17,8 @@ import (
 )
 
 func CreateApp(name string, serveFS assetfs.ServeFS, reloadTemplates bool) *fiber.App {
+	app := fiber.New(fiber.Config{CaseSensitive: true, DisableStartupMessage: true})
+
 	engine := jet.NewFileSystem(afero.NewHttpFs(serveFS.Templates), ".jet.html")
 
 	engine.Reload(reloadTemplates)
@@ -29,13 +31,22 @@ func CreateApp(name string, serveFS assetfs.ServeFS, reloadTemplates bool) *fibe
 		"enabled": viper.GetBool("appbar.enabled"),
 	})
 
+	engine.AddFunc("sidebar", fiber.Map{
+		"enabled": viper.GetBool("sidebar.enabled"),
+	})
+
 	engine.AddFunc("renderMarkdown", format.MarkdownToHTML)
 	engine.AddFunc("getVendoredPackage", web.GetVendoredPackage)
 
+	
 	renderer := templaterenderer.NewRenderer(engine)
-	app := fiber.New(fiber.Config{CaseSensitive: true, DisableStartupMessage: true})
 	b := NewPagesHandler(name, renderer)
-	app.Get("/:filepath?+", b.Handle)
+	if (b.config.GetString("path") == "/") {
+		app.Get("/:filepath", b.Handle)
+	} else {
+		app.Get("/:filepath?+", b.Handle)
+	}
+	app.Get("/", b.Handle)
 
 	return app
 }

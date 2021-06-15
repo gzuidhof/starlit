@@ -10,7 +10,7 @@
 {{end}}
 
 {{block appbar()}}
-<nav class="appbar">
+<nav class="appbar collapsed">
     <div class="inner text-muted">
 
     <header class="d-flex align-items-center text-decoration-none ps-3">
@@ -18,13 +18,15 @@
             <button onclick="document.querySelector('.appbar').classList.toggle('collapsed')" class="btn btn-icon p-0 me-3 border-0">
                 <i class="bi bi-list"></i>
             </button>
-            <h1 class="m-0 h6"><a class="text-decoration-none" href="/">Starlit</a></h1>
+            <h1 class="m-0 h6"><a class="text-decoration-none" href="/">{{ root.title }}</a></h1>
         </a>
     </header>
     
     <ul class="appbar-menu">
-        {{yield _appbarEntry(href="/", title="Home", icon="bi bi-stars")}}
-        {{yield _appbarEntry(href="/docs", title="Documentation", icon="bi bi-file-code")}}
+        {{ range _, k := space_names }}
+            {{app := spaces[k]}}
+            {{ yield _appbarEntry(href=app.path, title=isset(app.name) ? app.name : isset(app.title) ? app.title : .k, icon=isset(app.icon) ? app.icon : "bi bi-app") }}
+        {{end}}
     </ul>
     </div>
 </nav>

@@ -35,3 +35,20 @@ weight: 3
 	assert.Equal(t, "prefix/path/hello", page.PathWithoutExtension)
 	assert.Equal(t, Markdown, page.Type)
 }
+
+func TestReadContentWithoutFrontmatter(t *testing.T) {
+	fs := afero.NewMemMapFs()
+
+	err := afero.WriteFile(fs, "prefix/path/hello.md", []byte(`# Hi`), 0644)
+	assert.NoError(t, err)
+
+	f, err := fs.Open("prefix/path/hello.md")
+	assert.NoError(t, err)
+	page, err := ReadPageFile("prefix/path/hello.md", f) 
+	assert.NoError(t, err)
+
+	assert.Equal(t, 0, page.Weight)
+	assert.Equal(t, []byte("# Hi"), page.Content)
+	assert.Equal(t, []byte("# Hi"), page.ContentWithoutFrontmatter)
+	assert.Equal(t, Markdown, page.Type)
+}

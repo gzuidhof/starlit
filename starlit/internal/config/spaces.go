@@ -18,18 +18,17 @@ func GetSpaceConfig(spaceName string, parentConfig *viper.Viper) *viper.Viper {
 	// This is not the root app
 	if spaceName != "" {
 		spaceConfig := viper.Sub("spaces." + spaceName)
-
 		if spaceConfig != nil {
 			vconfig.MergeConfigMap(spaceConfig.AllSettings())
 		}
-
-		vconfig.Set("serve_filepath", path.Join(parentConfig.GetString("serve_filepath"), "path"))
+		vconfig.Set("serve_filepath", path.Join(parentConfig.GetString("serve_filepath"), spaceConfig.GetString("path")))
 	}
 
+	vconfig.Set("space", vconfig.AllSettings())
 	return vconfig
 }
 
-func GetPageConfig(pageName string, frontmatterConfig *viper.Viper, spaceConfig *viper.Viper) *viper.Viper {
+func GetPageConfig(pageName string, spaceConfig *viper.Viper, frontmatterConfig *viper.Viper) *viper.Viper {
 	vconfig := viper.New()
 	// Merge the space config
 	vconfig.MergeConfigMap(spaceConfig.AllSettings())

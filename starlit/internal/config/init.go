@@ -40,4 +40,7 @@ func InitConfig(cfgFile string) {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+
+	viper.Set("root", viper.AllSettings())
+
 }

@@ -7,10 +7,12 @@
   <div class="app">
     {{ if appbar.enabled }}
     {{yield appbar()}}
-    {{end}}    
+    {{end}}
     
       <main class="d-flex">
-        {{yield sidebar()}}
+        {{if sidebar.enabled}}
+          {{yield sidebar()}}
+        {{end}}
         {{yield main()}}
       </main>
 

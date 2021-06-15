@@ -3,8 +3,8 @@ package web
 
 var vendoredLibraries = map[string]string {
     "js-base64": "js-base64@3.6.0",
-    "starboard-notebook": "starboard-notebook@0.9.4",
-    "starboard-wrap": "starboard-wrap@0.3.2",
+    "starboard-notebook": "starboard-notebook@0.12.0",
+    "starboard-wrap": "starboard-wrap@0.4.0",
 
 }
 
