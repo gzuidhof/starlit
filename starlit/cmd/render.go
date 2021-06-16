@@ -26,15 +26,11 @@ var renderCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(serverCmd)
+	rootCmd.AddCommand(renderCmd)
 
-	serverCmd.Flags().StringP("port", "p", "8585", "Port to serve files on")
+	renderCmd.Flags().String("static_folder", "", "Override where static assets are loaded from, it uses the embedded assets if not set")
+	renderCmd.Flags().String("templates_folder", "", "Override where templates are loaded from, it uses the embedded assets if not set")
 
-	serverCmd.Flags().String("static_folder", "", "Override where static assets are loaded from, it uses the embedded assets if not set")
-	serverCmd.Flags().String("templates_folder", "", "Override where templates are loaded from, it uses the embedded assets if not set")
-
-	viper.BindPFlag("port", serverCmd.Flags().Lookup("port"))
-
-	viper.BindPFlag("static_folder", serverCmd.Flags().Lookup("static_folder"))
-	viper.BindPFlag("templates_folder", serverCmd.Flags().Lookup("templates_folder"))
+	viper.BindPFlag("static_folder", renderCmd.Flags().Lookup("static_folder"))
+	viper.BindPFlag("templates_folder", renderCmd.Flags().Lookup("templates_folder"))
 }

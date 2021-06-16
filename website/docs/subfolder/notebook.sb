@@ -1,0 +1,5 @@
+---
+title: "Example Notebook"
+---
+# %% [javascript]
+console.log("Hello world!")
