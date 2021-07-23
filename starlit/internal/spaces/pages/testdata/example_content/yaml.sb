@@ -3,8 +3,10 @@ my_prefix:
   my_field: notebook
 weight: 1
 ---
-# %% [javascript]
+# %%--- [javascript]
+# properties:
+#   run_on_load: true
+# ---%%
 console.log(`hello` + ' ' + "world");
 # %% [html]
 <b>Bold text</b> 😀
-# %% [html]

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>NBTest | Starlit</title>
+    <link rel="stylesheet" href="{{starboard_cdn}}/starboard-notebook.css">
+    <link rel="icon" href="{{starboard_cdn}}/favicon.ico">
+
+    <link rel="preload" href="{{starboard_cdn}}/inter.var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{starboard_cdn}}/bootstrap-icons.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{starboard_cdn}}/codemirrorEditor.chunk.js" as="script" crossorigin>
+    <link rel="preload" href="{{starboard_cdn}}/katex.chunk.js" as="script" crossorigin>
+
+    <style>
+      .nbtest-container {
+        border: 1px solid #eee;
+        border-radius: 6px;
+      }
+
+      .nbtest-container.nbtest-running {
+        background-color: #f0f0f0;
+      }
+      
+      .nbtest-container.nbtest-pass {
+        background-color: #ceffd9;
+      }
+      
+      .nbtest-container.nbtest-fail {
+        background-color: #ffaeae;
+      }
+    </style>
+</head>
+
+<body>
+    <div class="p-3 m-3 nbtest-container m-3">
+        <h1 class="h4">Starlit NB Test</h1>
+        <div class="nbtest-result-container small">
+            ⌛ Waiting for notebook to fully load
+        </div>
+    </div>
+    <script>
+      const container = document.querySelector(".nbtest-container");
+      const resultContainer = document.querySelector(".nbtest-result-container");
+
+      function decodeBase64(base64) {
+          const text = atob(base64);
+          const bytes = new Uint8Array(text.length);
+          for (let i = 0; i < text.length; i++) {
+              bytes[i] = text.charCodeAt(i);
+          }
+          const decoder = new TextDecoder();
+          return decoder.decode(bytes);
+      }
+      
+      async function runAllNotebookCellsForNBTest() {
+        try {
+            resultContainer.innerText = "🤞 Running notebook.."
+            container.classList.add("nbtest-running");
+
+            await runtime.controls.runAllCells({onRunOnLoad: false})
+
+            resultContainer.innerText = "✅ Notebook ran to the end without errors."
+            container.classList.add("nbtest-pass");
+        } catch (e) {
+            console.error(e);
+
+            resultContainer.innerText = "❌ Notebook threw an exception."
+            container.classList.add("nbtest-fail");
+
+            throw e;
+        }
+      }
+
+      // Prevent initial run, as we want to perform our own run of all the cells.
+      document.addEventListener("sb:run_all_cells", (e) => {
+        if (e.detail.isInitialRun) {
+            e.preventDefault();
+            runAllNotebookCellsForNBTest()
+        }
+      });
+
+      const b64Content = {{writeJson(notebook_content)}};
+      window.initialNotebookContent = decodeBase64(b64Content);
+      window.starboardArtifactsUrl = "{{starboard_cdn}}/";
+    </script>
+
+    <script src="{{starboard_cdn}}/starboard-notebook.js"></script>
+</body>
+
+</html>

@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// serverCmd represents the serve command
 var renderCmd = &cobra.Command{
 	Use:   "render",
 	Short: "Renders files in the given folder or path.",
@@ -23,6 +22,7 @@ var renderCmd = &cobra.Command{
 		}
 		server.Start(args[0])
 	},
+	PreRun: bindRenderCmdToViper,
 }
 
 func init() {
@@ -30,7 +30,10 @@ func init() {
 
 	renderCmd.Flags().String("static_folder", "", "Override where static assets are loaded from, it uses the embedded assets if not set")
 	renderCmd.Flags().String("templates_folder", "", "Override where templates are loaded from, it uses the embedded assets if not set")
+}
 
-	viper.BindPFlag("static_folder", renderCmd.Flags().Lookup("static_folder"))
-	viper.BindPFlag("templates_folder", renderCmd.Flags().Lookup("templates_folder"))
+
+func bindRenderCmdToViper(cmd *cobra.Command, args []string) {
+	viper.BindPFlag("static_folder", cmd.Flags().Lookup("static_folder"))
+	viper.BindPFlag("templates_folder", cmd.Flags().Lookup("templates_folder"))
 }

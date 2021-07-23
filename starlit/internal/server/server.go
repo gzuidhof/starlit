@@ -5,6 +5,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"path/filepath"
 
@@ -13,8 +14,8 @@ import (
 )
 
 func Start(servePath string) {
-	portPrimary := viper.GetString("port")
-	portSecondary := viper.GetString("port_secondary")
+	portPrimary := viper.GetString("server.port")
+	portSecondary := viper.GetString("server.port_secondary")
 	
 	serveFolder := servePath
 	serveFolderAbs, err := filepath.Abs(serveFolder)
@@ -35,4 +36,24 @@ func Start(servePath string) {
 	log.Printf("\nListening on :%v (and :%s for sandboxing)\nhttp://localhost:%v", portPrimary, portSecondary, portPrimary)
 
 	<-done
+}
+
+
+func StartNBTestServer(testPath string) string {
+	portPrimary := viper.GetString("server.port")
+	
+	serveFolder := testPath
+	serveFolderAbs, err := filepath.Abs(serveFolder)
+	if err != nil {
+		log.Fatalf("Invalid test files path, could not get absolute path: %v", err)
+	}
+
+	viper.Set("serve_filepath", serveFolderAbs)
+	serveFS := assetfs.GetAssetFileSystems()
+
+	go func() {
+		log.Fatal(startNBTestServer(serveFolderAbs, serveFS, portPrimary))
+	}()
+
+	return fmt.Sprintf("http://localhost:%s", portPrimary)
 }
