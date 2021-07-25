@@ -1,37 +1,50 @@
 package nbtest
 
 import (
-	"context"
+	"fmt"
 	"log"
+	"os"
+	"time"
 
-	"github.com/chromedp/chromedp"
+	"github.com/fatih/color"
 	"github.com/gzuidhof/starlit/starlit/internal/server"
 )
 
+func TestPath(testPath string, serveMode bool, headless bool) {
+	filesToTest := GatherFilesToTest(testPath)
 
-func TestPath(testPath string, stayAlive bool) {
-	serverUrl := server.StartNBTestServer(testPath)
-	target := serverUrl + "/nbtest/example_content/yaml.sb"
-
-	// create context
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
-
-	// run task list
-	var res []string
-	err := chromedp.Run(ctx,
-		chromedp.Navigate(target),
-		chromedp.Evaluate(`Object.keys(window);`, &res),
-	)
-	if err != nil {
-		log.Fatal(err)
+	if len(filesToTest) == 0 {
+		log.Printf("No notebook files found under %s", testPath)
+		os.Exit(0)
 	}
 
-	log.Printf("window object keys: %v", res)
+	serverUrl := server.StartNBTestServer(testPath)
+	runner := NewTestRunner(testPath, headless, time.Second * 15)
 
-	if (stayAlive) {
+	hadError := false
+
+	for _, filepath := range filesToTest {
+		targetURL := serverUrl + "/nbtest/" + filepath
+		err := runner.testNotebook(targetURL, filepath)
+
+		if (err != nil) {
+			if (serveMode) {
+				fmt.Fprintf(color.Output, "%s %s\n", color.HiBlackString("^^^^"), color.HiBlackString(targetURL))
+
+			}
+			hadError = true
+		}
+	}
+
+	// fmt.Println("Done")
+	if (serveMode) {
 		done := make(chan bool)
 		log.Printf("Serving nbtest on %s/nbtest/", serverUrl)
 		<- done
+	}
+
+	runner.cancelCtx()
+	if (hadError) {
+		os.Exit(1)
 	}
 }

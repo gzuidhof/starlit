@@ -24,7 +24,11 @@ var nbtestCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		nbtest.TestPath(args[0], keepAlive)
+		headless, err := cmd.Flags().GetBool("headless")
+		if err != nil {
+			log.Fatal(err)
+		}
+		nbtest.TestPath(args[0], keepAlive, headless)
 	},
 	PreRun: bindTestCmdToViper,
 }
@@ -33,6 +37,7 @@ func init() {
 	rootCmd.AddCommand(nbtestCmd)
 
 	nbtestCmd.Flags().Bool("serve", false, "Keep the NB test server alive so you can access the files on the `/nbtest/<filepath>` endpoint")
+	nbtestCmd.Flags().Bool("headless", true, "Run in headless mode")
 
 	nbtestCmd.Flags().String("static_folder", "", "Override where static assets are loaded from, it uses the embedded assets if not set")
 	nbtestCmd.Flags().String("templates_folder", "", "Override where templates are loaded from, it uses the embedded assets if not set")

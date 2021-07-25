@@ -28,7 +28,8 @@ func CreateNBTestApp(serveFolderAbs string, serveFS assetfs.ServeFS) (*fiber.App
 	starboardArtifactsURL := strings.TrimSuffix(viper.GetString("sandbox_url"), "/index.html")
 	pyodideArtifactsURL := ""
 
-	nbTestHandler := nbtesthandler.NewNBTestHandler(serveFolderAbs, starboardArtifactsURL, pyodideArtifactsURL, renderer)
+	fs := afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), serveFolderAbs))
+	nbTestHandler := nbtesthandler.NewNBTestHandler(fs, starboardArtifactsURL, pyodideArtifactsURL, renderer)
 
 	app.Use("/static/*", filesystem.New(filesystem.Config{
 		Root: afero.NewHttpFs(stripprefix.New("/static/", serveFS.Static)),

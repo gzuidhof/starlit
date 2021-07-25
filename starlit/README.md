@@ -15,6 +15,11 @@ go build &&  ./starlit serve . --static_folder web/app/dist/static --templates_f
 
 Consider it live-reload for everything that is not defined in Go files :).
 
+
+```
+go build && ./starlit.exe nbtest ../../starboard-notebook/src/debugNotebooks --templates_folder web/templates
+```
+
 ## Releases
 
 Releases are minted on CI, you can create one locally by running

@@ -41,18 +41,12 @@ func Start(servePath string) {
 
 func StartNBTestServer(testPath string) string {
 	portPrimary := viper.GetString("server.port")
-	
-	serveFolder := testPath
-	serveFolderAbs, err := filepath.Abs(serveFolder)
-	if err != nil {
-		log.Fatalf("Invalid test files path, could not get absolute path: %v", err)
-	}
 
-	viper.Set("serve_filepath", serveFolderAbs)
+	viper.Set("serve_filepath", testPath)
 	serveFS := assetfs.GetAssetFileSystems()
 
 	go func() {
-		log.Fatal(startNBTestServer(serveFolderAbs, serveFS, portPrimary))
+		log.Fatal(startNBTestServer(testPath, serveFS, portPrimary))
 	}()
 
 	return fmt.Sprintf("http://localhost:%s", portPrimary)

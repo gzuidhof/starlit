@@ -20,9 +20,7 @@ type NBTestHandler struct {
 	pyodideArtifactsURL string
 }
 
-func NewNBTestHandler(serveFilepath string, starboardArtifactsURL string, pyodideArtifactsURL string, templateRenderer templaterenderer.TemplateRenderer) *NBTestHandler {
-	fs := afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), serveFilepath))
-
+func NewNBTestHandler(fs afero.Fs, starboardArtifactsURL string, pyodideArtifactsURL string, templateRenderer templaterenderer.TemplateRenderer) *NBTestHandler {
 	return &NBTestHandler{
 		TemplateRenderer: templateRenderer,
 		fs: fs,

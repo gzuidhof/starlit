@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/chromedp/cdproto v0.0.0-20210721224921-12abf3292481 // indirect
 	github.com/chromedp/chromedp v0.7.4 // indirect
+	github.com/fatih/color v1.12.0 // indirect
 	github.com/gofiber/fiber/v2 v2.7.1
 	github.com/gofiber/template v1.6.8
 	github.com/gohugoio/hugo v0.83.1

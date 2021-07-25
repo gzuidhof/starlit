@@ -20,7 +20,7 @@
         border-radius: 6px;
       }
 
-      .nbtest-container.nbtest-running {
+      .nbtest-container.nbtest-started {
         background-color: #f0f0f0;
       }
       
@@ -58,21 +58,42 @@
       async function runAllNotebookCellsForNBTest() {
         try {
             resultContainer.innerText = "🤞 Running notebook.."
-            container.classList.add("nbtest-running");
+            container.classList.add("nbtest-started");
 
             await runtime.controls.runAllCells({onRunOnLoad: false})
 
+            window.__nbTestResult = {
+              pass: true,
+            };
+
             resultContainer.innerText = "✅ Notebook ran to the end without errors."
-            container.classList.add("nbtest-pass");
+            container.classList.add("nbtest-pass", "nbtest-done");
+
         } catch (e) {
             console.error(e);
 
-            resultContainer.innerText = "❌ Notebook threw an exception."
-            container.classList.add("nbtest-fail");
+            window.__nbTestResult = {
+              pass: false,
+              error: JSON.parse(JSON.stringify(e, ["stack", ...Object.getOwnPropertyNames(e)]))
+            };
 
+            resultContainer.innerText = "❌ Notebook threw an exception."
+            container.classList.add("nbtest-fail", "nbtest-done");
+            
             throw e;
         }
       }
+
+      window.addEventListener('unhandledrejection', function (e) {
+            console.error("Unhandled Rejection", e.reason);
+            window.__nbTestResult = {
+              pass: false,
+              error: JSON.parse(JSON.stringify(e.reason, ["stack", ...Object.getOwnPropertyNames(e.reason)]))
+            };
+
+            resultContainer.innerText = "❌ Notebook had an unhandled rejection."
+            container.classList.add("nbtest-started", "nbtest-fail", "nbtest-done");
+      })
 
       // Prevent initial run, as we want to perform our own run of all the cells.
       document.addEventListener("sb:run_all_cells", (e) => {
