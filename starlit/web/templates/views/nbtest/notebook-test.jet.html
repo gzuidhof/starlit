@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <title>NBTest | Starlit</title>
-    <link rel="stylesheet" href="{{starboard_cdn}}/starboard-notebook.css">
-    <link rel="icon" href="{{starboard_cdn}}/favicon.ico">
+    <link rel="stylesheet" href="{{starboard_artifacts_url}}/starboard-notebook.css">
+    <link rel="icon" href="{{starboard_artifacts_url}}/favicon.ico">
 
-    <link rel="preload" href="{{starboard_cdn}}/inter.var.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{starboard_cdn}}/bootstrap-icons.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{starboard_cdn}}/codemirrorEditor.chunk.js" as="script" crossorigin>
-    <link rel="preload" href="{{starboard_cdn}}/katex.chunk.js" as="script" crossorigin>
+    <link rel="preload" href="{{starboard_artifacts_url}}/inter.var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{starboard_artifacts_url}}/bootstrap-icons.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{starboard_artifacts_url}}/codemirrorEditor.chunk.js" as="script" crossorigin>
+    <link rel="preload" href="{{starboard_artifacts_url}}/katex.chunk.js" as="script" crossorigin>
 
     <style>
       .nbtest-container {
@@ -26,6 +26,10 @@
       
       .nbtest-container.nbtest-pass {
         background-color: #ceffd9;
+      }
+
+      .nbtest-container.nbtest-skip {
+        background-color: #ffefb9;
       }
       
       .nbtest-container.nbtest-fail {
@@ -41,6 +45,7 @@
             ⌛ Waiting for notebook to fully load
         </div>
     </div>
+  
     <script>
       const container = document.querySelector(".nbtest-container");
       const resultContainer = document.querySelector(".nbtest-result-container");
@@ -54,6 +59,21 @@
           const decoder = new TextDecoder();
           return decoder.decode(bytes);
       }
+
+      function checkForSkipFlag() {
+          if (runtime && runtime.content && runtime.content.metadata.nbtest && runtime.content.metadata.nbtest.skip === true) {
+            console.warn("Skipping nbtest test");
+            window.__nbTestResult = {
+              status: "SKIP",
+            };
+
+            resultContainer.innerText = "🦘 Notebook test skipped."
+            container.classList.add("nbtest-started", "nbtest-skip", "nbtest-done");
+          
+            return true;
+          }
+          return false;
+      }
       
       async function runAllNotebookCellsForNBTest() {
         try {
@@ -63,7 +83,7 @@
             await runtime.controls.runAllCells({onRunOnLoad: false})
 
             window.__nbTestResult = {
-              pass: true,
+              status: "PASS",
             };
 
             resultContainer.innerText = "✅ Notebook ran to the end without errors."
@@ -73,7 +93,7 @@
             console.error(e);
 
             window.__nbTestResult = {
-              pass: false,
+              status: "FAIL",
               error: JSON.parse(JSON.stringify(e, ["stack", ...Object.getOwnPropertyNames(e)]))
             };
 
@@ -85,9 +105,11 @@
       }
 
       window.addEventListener('unhandledrejection', function (e) {
+            if (checkForSkipFlag()) return; // Triggered when a plugin fails to load
+
             console.error("Unhandled Rejection", e.reason);
             window.__nbTestResult = {
-              pass: false,
+              status: "FAIL",
               error: JSON.parse(JSON.stringify(e.reason, ["stack", ...Object.getOwnPropertyNames(e.reason)]))
             };
 
@@ -99,16 +121,21 @@
       document.addEventListener("sb:run_all_cells", (e) => {
         if (e.detail.isInitialRun) {
             e.preventDefault();
-            runAllNotebookCellsForNBTest()
+            if (!checkForSkipFlag()) {
+              runAllNotebookCellsForNBTest()
+            }
         }
       });
 
       const b64Content = {{writeJson(notebook_content)}};
       window.initialNotebookContent = decodeBase64(b64Content);
-      window.starboardArtifactsUrl = "{{starboard_cdn}}/";
+      window.starboardArtifactsUrl = "{{starboard_artifacts_url}}/";
+      {{ if isset(pyodide_artifacts_url) && pyodide_artifacts_url != ""}}
+      window.pyodideArtifactsUrl = "{{pyodide_artifacts_url}}";
+      {{ end }}
     </script>
 
-    <script src="{{starboard_cdn}}/starboard-notebook.js"></script>
+    <script src="{{starboard_artifacts_url}}/starboard-notebook.js"></script>
 </body>
 
 </html>

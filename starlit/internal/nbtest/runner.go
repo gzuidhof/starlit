@@ -1,14 +1,14 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package nbtest
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/chromedp/chromedp"
-	"github.com/fatih/color"
 )
 
 type JSError struct {
@@ -20,27 +20,41 @@ type JSError struct {
 }
 
 type TestResult struct {
-	Pass bool `json:"pass"`
+	Name string
+	URL string
+
+	// "PASS"" | "FAIL" | "SKIP"
+	Status string
+	Message string
+
+	Timing time.Duration
+	InternalError error
+}
+
+type browserTestResult struct {
+	// "PASS"" | "FAIL" | "SKIP"
+	Status string `json:"status"`
 	Error JSError `json:"error"`
 }
 
 type TestRunner struct {
 	timeout time.Duration
+	serveMode bool
+
 	testPath string
 	ctx context.Context 
 
 	cancelCtx context.CancelFunc
 }
 
-func NewTestRunner(testPath string, headless bool, timeout time.Duration) *TestRunner {
+func NewTestRunner(testPath string, headless bool, serveMode bool, timeout time.Duration) *TestRunner {
 	opts := defaultNBTestExecAllocatorOptions[:]
 
-	// if (headless) {
-	// 	opts = append(opts, chromedp.Headless)
-	// }
+	if (headless) {
+		opts = append(opts, chromedp.Headless)
+	}
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
-
 	taskCtx, _ := chromedp.NewContext(allocCtx)
 
 	// ensure the first tab is created (this way the browser doesn't keep getting closed)
@@ -50,64 +64,68 @@ func NewTestRunner(testPath string, headless bool, timeout time.Duration) *TestR
 
 	return &TestRunner {
 		timeout: timeout,
+		serveMode: serveMode,
 		testPath: testPath,
 		ctx: taskCtx,
 		cancelCtx: cancel,
 	}
 }
 
-func (r *TestRunner) printError(name string, message string, err error) error {
-	if errors.Is(err, context.DeadlineExceeded) {
-		fmt.Fprintf(
-			color.Output,
-			"%s %s - %s %s\n",
-			color.HiRedString("FAIL"),
-			name,
-			color.YellowString((fmt.Sprintf("Timeout exceeded (%s)", r.timeout))),
-			message,
-		)
-		return fmt.Errorf("%s: timeout exceeded %w", message, err)
-	}
-
-	return fmt.Errorf("%s: %w", message, err)
-}
-
-func (r *TestRunner) testNotebook(targetURL string, name string) error {
+func (r *TestRunner) testNotebook(targetURL string, name string) *TestResult {
 	taskCtx, cancel := chromedp.NewContext(r.ctx)
 	defer cancel()
 
 	ctx, cancel := context.WithTimeout(taskCtx, r.timeout)
 	defer cancel()
 
+	tr := &TestResult{
+		URL: targetURL,
+		Name: name,
+		Status: "FAIL", // We overwrite it in the other cases
+	}
+	defer func (t time.Time) {
+		tr.Timing = time.Since(t)
+	}(time.Now())
+
 	err := chromedp.Run(ctx, chromedp.Navigate(targetURL))
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := chromedp.Run(ctx, chromedp.WaitReady("starboard-notebook")); err != nil {
-		return r.printError(name, "waiting for starboard-notebook element", err)
+		tr.InternalError = err;
+		tr.Message = "waiting for browser to open page"
+		return tr
 	}
 
 	if err := chromedp.Run(ctx, chromedp.WaitReady(".nbtest-started")); err != nil {
-		return r.printError(name, "waiting to start running all cells", err)
+		tr.InternalError = err;
+		tr.Message = "waiting to start running all cells"
+		return tr
 	}
 
 	if err := chromedp.Run(ctx, chromedp.WaitReady(".nbtest-done")); err != nil {
-		return r.printError(name, "waiting for notebook to be run completely", err)
+		tr.InternalError = err;
+		tr.Message = "waiting for notebook to be run completely"
+		return tr
 	}
 
-	// // get project link text
-	var testResult TestResult
+	var testResult browserTestResult
 	if err := chromedp.Run(ctx, chromedp.Evaluate("window.__nbTestResult", &testResult)); err != nil {
-		return r.printError(name, "retrieving test result from browser", err)
+		tr.InternalError = err;
+		tr.Message = "retrieving test result from browser"
+		return tr
 	}
 
-	if (testResult.Pass) {
-		fmt.Fprintf(color.Output, "%s %s\n", color.GreenString("PASS"), name)
-	} else {
-		fmt.Fprintf(color.Output, "%s %s %s\n", color.HiRedString("FAIL"), name, color.RedString(testResult.Error.Message))
-		return fmt.Errorf("nbtest fail")
+	if (testResult.Status == "PASS") {
+		tr.Status = "PASS"
+		return tr
+	} else if (testResult.Status == "FAIL"){
+		tr.Status = "FAIL"
+		tr.Message = testResult.Error.Message
+		return tr
+	} else if (testResult.Status == "SKIP") {
+		tr.Status = "SKIP"
+		return tr
+	} else { // Should never happen
+		tr.InternalError = fmt.Errorf("unknown nbtest result status: %s", testResult.Status)
+		tr.Message = "Unkown nbtest result status from browser message"
+		return tr
 	}
-
-	return nil
 }

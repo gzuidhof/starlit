@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>NBTest Skip | Starlit</title>
+    <style>
+      .nbtest-container {
+        border: 1px solid #eee;
+        border-radius: 6px;
+      }
+
+      .nbtest-container.nbtest-skip {
+        background-color: #ffefb9;
+      }
+    </style>
+</head>
+
+<body>
+    <div class="p-3 m-3 nbtest-container m-3 nbtest-started nbtest-skip nbtest-done">
+        <h1 class="h4">Starlit NB Test</h1>
+        <div class="nbtest-result-container small">
+            🦘 Notebook test skipped.
+        </div>
+    </div>
+  
+    <script>
+      window.__nbTestResult = {
+        status: "SKIP",
+      };
+    </script>
+</body>
+
+</html>
