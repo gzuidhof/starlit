@@ -34,7 +34,7 @@ func init() {
 	nbtestCmd.Flags().Float64("timeout", 30, "Timeout for individual tests in seconds (0 = no timeout)")
 	nbtestCmd.Flags().Int("concurrency", 0, "Number of tests to run in parallel (0 = num CPUs)")
 
-	nbtestCmd.Flags().String("starboard_artifacts", "", "URL prefix of starboard artifacts (perhaps from a dev server on your localhost during local development). Defaults to the static assets embedded in the binary or served from the `static_folder` flag")
+	nbtestCmd.Flags().String("starboard_artifacts", "", "URL prefix of starboard artifacts (perhaps from a dev server on your localhost during local development) or a path to a folder. Defaults to the static assets embedded in the binary or served from the `static_folder` flag")
 	nbtestCmd.Flags().String("pyodide_artifacts", "", "URL prefix of pyodide artifacts (e.g. \"https://cdn.jsdelivr.net/pyodide/v0.17.0/full/\")")
 
 	nbtestCmd.Flags().String("static_folder", "", "Override where static assets are loaded from, it uses the embedded assets if not set")
@@ -51,6 +51,6 @@ func bindTestCmdToViper(cmd *cobra.Command, args []string) {
 	viper.BindPFlag("nbtest.timeout", cmd.Flags().Lookup("timeout"))
 	viper.BindPFlag("nbtest.concurrency", cmd.Flags().Lookup("concurrency"))
 
-	viper.BindPFlag("nbtest.starboard_artifacts_url", cmd.Flags().Lookup("starboard_artifacts"))
-	viper.BindPFlag("nbtest.pyodide_artifacts_url", cmd.Flags().Lookup("pyodide_artifacts"))
+	viper.BindPFlag("nbtest.starboard_artifacts", cmd.Flags().Lookup("starboard_artifacts"))
+	viper.BindPFlag("nbtest.pyodide_artifacts", cmd.Flags().Lookup("pyodide_artifacts"))
 }

@@ -8,9 +8,11 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/gzuidhof/starlit/starlit/internal/fs/assetfs"
 	"github.com/gzuidhof/starlit/starlit/internal/server"
 	"github.com/spf13/viper"
 	"github.com/xxjwxc/gowp/workpool"
@@ -44,6 +46,31 @@ func getTimeout() time.Duration {
 	return time.Duration(float64(time.Second) * timeoutOpt)
 }
 
+// getStarboardFolder returns the folder to serve artifacts from, or ""
+// in case no such folder was passed
+func getArtifactsFolder(viperConfigKey string) string {
+	f := viper.GetString(viperConfigKey)
+	if (f == "") {
+		return "";
+	}
+
+	if strings.HasPrefix(f, "http://") || strings.HasPrefix(f, "https://") {
+		return ""
+	}
+
+	stat, err := os.Stat(f)
+
+	if err != nil {
+		log.Fatalf("Invalid folder for %s: %v", viperConfigKey, err)
+	}
+
+	if (!stat.IsDir()) {
+		log.Fatalf("Invalid folder for %s: not a directory", viperConfigKey)
+	}
+
+	return f
+}
+
 func TestPath(testPath string) {
 	filesToTest := GatherFilesToTest(testPath)
 
@@ -52,9 +79,22 @@ func TestPath(testPath string) {
 		os.Exit(0)
 	}
 
-	serverUrl := server.StartNBTestServer(testPath)
+	port := viper.GetString("server.port")
+	viper.Set("serve_filepath", testPath)
+	serveFS := assetfs.GetAssetFileSystems()
+	serverURL := fmt.Sprintf("http://localhost:%s", port)
+
+	go func() {
+		log.Fatal(server.StartNBTestServer(testPath, serveFS, port, getArtifactsFolder("nbtest.starboard_artifacts"), getArtifactsFolder("nbtest.pyodide_artifacts")))
+	}()
+	
+
 	runner := NewTestRunner(testPath, viper.GetBool("nbtest.headless"), viper.GetBool("nbtest.serve"), getTimeout())
 	serveMode := viper.GetBool("nbtest.serve")
+
+	if serveMode {
+		fmt.Fprintf(color.Output, "%s %s\n", color.HiBlackString("Serving nbtest on"), color.BlueString(serverURL + "/nbtest/"))
+	}
 
 	hadError := false
 	start := time.Now()
@@ -63,7 +103,7 @@ func TestPath(testPath string) {
 	for _, p := range filesToTest {
 		filepath := p
 		wp.Do(func() error {
-			targetURL := serverUrl + "/nbtest/" + filepath
+			targetURL := serverURL + "/nbtest/" + filepath
 			result := runner.testNotebook(targetURL, filepath)
 			if (result.Status == "FAIL") {
 				hadError = true
@@ -85,7 +125,7 @@ func TestPath(testPath string) {
 
 	if (serveMode) {
 		done := make(chan bool)
-		fmt.Fprintf(color.Output, "%s %s\n", color.HiBlackString("Serving nbtest on"), color.BlueString(serverUrl + "/nbtest/"))
+		
 		<- done
 	}
 	

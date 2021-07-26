@@ -10,9 +10,12 @@ Alternatively, you can build and install it yourself by cloning this repository 
 
 ```bash
 cd starlit
-go generate
+go generate ./...
 go install
 ```
+
+## Usage
+See the [dedicated starlit CLI readme](./starlit)
 
 ## License
 This is free software; you can redistribute it and/or modify it under the terms of the [Mozilla Public License Version 2.0](./LICENSE).

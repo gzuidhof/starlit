@@ -5,7 +5,6 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"path/filepath"
 
@@ -36,18 +35,4 @@ func Start(servePath string) {
 	log.Printf("\nListening on :%v (and :%s for sandboxing)\nhttp://localhost:%v", portPrimary, portSecondary, portPrimary)
 
 	<-done
-}
-
-
-func StartNBTestServer(testPath string) string {
-	portPrimary := viper.GetString("server.port")
-
-	viper.Set("serve_filepath", testPath)
-	serveFS := assetfs.GetAssetFileSystems()
-
-	go func() {
-		log.Fatal(startNBTestServer(testPath, serveFS, portPrimary))
-	}()
-
-	return fmt.Sprintf("http://localhost:%s", portPrimary)
 }

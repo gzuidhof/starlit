@@ -21,22 +21,30 @@ import (
 type NBTestHandler struct {
 	templaterenderer.TemplateRenderer
 	fs afero.Fs
+	
 	starboardArtifactsURL string
 	pyodideArtifactsURL string
 }
 
-func NewNBTestHandler(fs afero.Fs, templateRenderer templaterenderer.TemplateRenderer) *NBTestHandler {
-
-	sbArtifacts := viper.GetString("nbtest.starboard_artifacts_url")
-	if sbArtifacts == "" {
+func NewNBTestHandler(fs afero.Fs, templateRenderer templaterenderer.TemplateRenderer, starboardArtifactsFolder string, pyodideArtifactsFolder string) *NBTestHandler {
+	sbArtifacts := viper.GetString("nbtest.starboard_artifacts")
+	if starboardArtifactsFolder != "" {
+		sbArtifacts = "/static/starboardArtifacts"
+	} else if sbArtifacts == "" {
 		sbArtifacts = fmt.Sprintf("/static/vendor/%s/dist", web.GetVendoredPackage("starboard-notebook"))
 	}
+
+	pyArtifacts := viper.GetString("nbtest.pyodide_artifacts")
+	if pyodideArtifactsFolder != "" {
+		pyArtifacts = "/static/pyodideArtifacts"
+	}
+
 
 	return &NBTestHandler{
 		TemplateRenderer: templateRenderer,
 		fs: fs,
 		starboardArtifactsURL: strings.TrimSuffix(sbArtifacts, "/"),
-		pyodideArtifactsURL: viper.GetString("nbtest.pyodide_artifacts_url"),
+		pyodideArtifactsURL: pyArtifacts,
 	}
 }
 

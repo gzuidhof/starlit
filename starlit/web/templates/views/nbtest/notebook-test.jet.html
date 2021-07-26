@@ -117,6 +117,19 @@
             container.classList.add("nbtest-started", "nbtest-fail", "nbtest-done");
       })
 
+       /*window.addEventListener('error', function (e) {
+            if (checkForSkipFlag()) return; // Triggered when a plugin fails to load
+
+            console.error("Unhandled Error", e);
+            window.__nbTestResult = {
+              status: "FAIL",
+              error: JSON.parse(JSON.stringify(e.reason, ["stack", ...Object.getOwnPropertyNames(e.reason)]))
+            };
+
+            resultContainer.innerText = "❌ Notebook had an unhandled error."
+            container.classList.add("nbtest-started", "nbtest-fail", "nbtest-done");
+      })*/
+
       // Prevent initial run, as we want to perform our own run of all the cells.
       document.addEventListener("sb:run_all_cells", (e) => {
         if (e.detail.isInitialRun) {
