@@ -1,7 +1,7 @@
 starlit
 ---
 
-The `starlit` command line tool and server for [Starboard Notebooks](https://github.com/gzuidhof/starboard-notebook) locally.
+The `starlit` command line testing tool and server for [Starboard Notebooks](https://github.com/gzuidhof/starboard-notebook) locally.
 
 ## Installation
 Pre-built binaries can be found on the [**Github releases page**](https://github.com/gzuidhof/starlit/releases/).
