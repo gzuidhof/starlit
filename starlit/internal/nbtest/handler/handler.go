@@ -69,10 +69,10 @@ func (h *NBTestHandler) Handle(c *fiber.Ctx) error {
 	}
 
 	if (page.FrontMatter.GetBool("nbtest.skip")) {
-		return h.Render(c, "views/nbtest/notebook-test-skip", nil)
+		return h.Render(c, "views/nbtest/notebook_test_skip", nil)
 	}
 
-	return h.Render(c, "views/nbtest/notebook-test", map[string]interface{} {
+	return h.Render(c, "views/nbtest/notebook_test", map[string]interface{} {
 		"notebook_content": page.Content,
 		"starboard_artifacts_url": h.starboardArtifactsURL,
 		"pyodide_artifacts_url":  h.pyodideArtifactsURL,

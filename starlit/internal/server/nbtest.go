@@ -28,6 +28,11 @@ func CreateNBTestApp(serveFolderAbs string, serveFS assetfs.ServeFS, starboardAr
 	engine := jet.NewFileSystem(afero.NewHttpFs(serveFS.Templates), ".jet.html")
 	renderer := templaterenderer.NewRenderer(engine)
 
+	err := engine.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// engine.Reload(true)
 
 	fs := afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), serveFolderAbs))
