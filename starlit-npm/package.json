@@ -1,6 +1,6 @@
 {
     "name": "starlit",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "description": "Starlit - static site generator and other tools for Starboard Notebook",
     "author": "Guido Zuidhof <me@guido.io>",
     "funding": {
@@ -29,6 +29,6 @@
         "url": "https://github.com/gzuidhof/starlit/releases/download/v{{version}}/starlit_{{version}}_{{platform}}_{{arch}}.tar.gz"
     },
     "dependencies": {
-        "@gzuidhof/go-npm": "0.1.9"
+        "@gzuidhof/go-npm": "0.1.10"
     }
 }
