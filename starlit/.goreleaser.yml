@@ -1,6 +1,6 @@
 before:
   hooks:
-    - go generate
+    - go generate ./...
 builds:
   - binary: starlit
     goos:
