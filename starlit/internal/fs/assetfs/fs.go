@@ -4,6 +4,7 @@
 package assetfs
 
 import (
+	"github.com/gzuidhof/starlit/starlit/internal/fs/stripprefix"
 	"github.com/gzuidhof/starlit/starlit/web/static"
 	"github.com/gzuidhof/starlit/starlit/web/templates"
 	"github.com/spf13/afero"
@@ -22,13 +23,13 @@ func GetAssetFileSystems() ServeFS {
 	if viper.GetString("static_folder") != "" {
 		staticFS = afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), viper.GetString("static_folder")))
 	} else {
-		staticFS = afero.FromIOFS{static.FS}
+		staticFS = afero.NewReadOnlyFs(afero.FromIOFS{static.FS})
 	}
 
 	if viper.GetString("templates_folder") != "" {
 		templatesFS = afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), viper.GetString("templates_folder")))
 	} else {
-		templatesFS = afero.FromIOFS{templates.FS}
+		templatesFS = afero.NewReadOnlyFs(stripprefix.New("/", afero.FromIOFS{templates.FS}))
 	}
 
 	return ServeFS{

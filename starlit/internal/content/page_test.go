@@ -25,14 +25,14 @@ weight: 3
 	f, err := fs.Open("prefix/path/hello.md")
 	assert.NoError(t, err)
 
-	page, err := ReadPageFile("prefix/path/hello.md", f) 
+	page, err := ReadPageFile("prefix/path/hello.md", f)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 3, page.Weight)
 	assert.Equal(t, "hello.md", page.Filename)
 	assert.Equal(t, "hello", page.FilenameWithoutExtension)
-	assert.Equal(t, "prefix/path/hello.md", page.Path)
-	assert.Equal(t, "prefix/path/hello", page.PathWithoutExtension)
+	assert.Equal(t, "/prefix/path/hello.md", page.Path)
+	assert.Equal(t, "/prefix/path/hello", page.PathWithoutExtension)
 	assert.Equal(t, Markdown, page.Type)
 }
 
@@ -44,7 +44,7 @@ func TestReadContentWithoutFrontmatter(t *testing.T) {
 
 	f, err := fs.Open("prefix/path/hello.md")
 	assert.NoError(t, err)
-	page, err := ReadPageFile("prefix/path/hello.md", f) 
+	page, err := ReadPageFile("prefix/path/hello.md", f)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 0, page.Weight)

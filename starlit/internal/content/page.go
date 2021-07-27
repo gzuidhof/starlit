@@ -17,7 +17,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-
 type PageType string
 
 const (
@@ -25,20 +24,20 @@ const (
 	JetTemplate PageType = "jet"
 	HTML        PageType = "html"
 	Notebook    PageType = "notebook"
-	Unknown PageType = "unknown"
+	Unknown     PageType = "unknown"
 )
 
 type Page struct {
-	Type                      PageType
-	Content                   []byte
+	Type    PageType
+	Content []byte
 
 	FrontMatter               *viper.Viper
 	ContentWithoutFrontmatter []byte
 
-	Path                      string
-	PathWithoutExtension	  string
-	Filename                  string
-	FilenameWithoutExtension  string
+	Path                     string
+	PathWithoutExtension     string
+	Filename                 string
+	FilenameWithoutExtension string
 
 	// Used to determine the order of pages
 	Weight int
@@ -46,7 +45,7 @@ type Page struct {
 
 func (p *Page) LinkTitle() string {
 	linkTitle := p.FrontMatter.GetString("link_title")
-	if (linkTitle != "") {
+	if linkTitle != "" {
 		return linkTitle
 	}
 	return p.Title()
@@ -55,7 +54,7 @@ func (p *Page) LinkTitle() string {
 func (p *Page) Title() string {
 
 	title := p.FrontMatter.GetString("title")
-	if (title == "") {
+	if title == "" {
 		return p.FilenameWithoutExtension
 	}
 
@@ -70,7 +69,7 @@ func DetermineContentFileType(filename string) PageType {
 	} else if ext == ".html" {
 		if strings.Contains(filename, ".jet.html") {
 			return JetTemplate
-		} 
+		}
 		return HTML
 	} else if ext == ".sb" || ext == ".nb" || ext == ".sbnb" {
 		return Notebook
@@ -99,24 +98,23 @@ func ReadPageFile(path string, file afero.File) (Page, error) {
 	if cmf.FrontMatterFormat == "" {
 		contentWithoutFrontmatter = b
 	}
-	
+
 	frontMatter := viper.New()
 	frontMatter.SetConfigType(string(cmf.FrontMatterFormat))
 	frontMatter.SetConfigName("frontmatter")
 	frontMatter.MergeConfigMap(cmf.FrontMatter)
 
 	return Page{
-		Type: DetermineContentFileType(filename),
-		Content: b,
-		FrontMatter: frontMatter,
+		Type:                      DetermineContentFileType(filename),
+		Content:                   b,
+		FrontMatter:               frontMatter,
 		ContentWithoutFrontmatter: contentWithoutFrontmatter,
-		
-		Path: path,
+
+		Path:                 path,
 		PathWithoutExtension: strings.Split(path, ".")[0],
 
-		Filename: filename,
+		Filename:                 filename,
 		FilenameWithoutExtension: strings.Split(filename, ".")[0],
-		Weight: frontMatter.GetInt("weight"),
-
+		Weight:                   frontMatter.GetInt("weight"),
 	}, nil
 }
