@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/chromedp/chromedp"
+	"github.com/spf13/viper"
 )
 
 type JSError struct {
@@ -53,7 +54,11 @@ func NewTestRunner(testPath string, headless bool, serveMode bool, timeout time.
 	if (headless) {
 		opts = append(opts, chromedp.Headless)
 	}
-
+	execPath := viper.GetString("nbtest.browser_exec_path")
+	if execPath != "" {
+		opts = append(opts, chromedp.ExecPath(execPath))
+	}
+	
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
 	taskCtx, _ := chromedp.NewContext(allocCtx)
 
