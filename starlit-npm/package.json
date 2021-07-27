@@ -1,6 +1,6 @@
 {
     "name": "starlit",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Starlit - static site generator and other tools for Starboard Notebook",
     "author": "Guido Zuidhof <me@guido.io>",
     "funding": {
@@ -19,9 +19,6 @@
         "testing",
         "ssg"
     ],
-    "dependencies": {
-        "@maple-leaf/go-npm": "*"
-    },
     "scripts": {
         "postinstall": "go-npm install",
         "preuninstall": "go-npm uninstall"
@@ -30,5 +27,8 @@
         "name": "starlit",
         "path": "./bin",
         "url": "https://github.com/gzuidhof/starlit/releases/download/v{{version}}/starlit_{{version}}_{{platform}}_{{arch}}.tar.gz"
+    },
+    "devDependencies": {
+        "go-npm": "github:RecuencoJones/go-npm#7e5607f443a0822c4a1a5f2026fb867cac3d40ed"
     }
 }
