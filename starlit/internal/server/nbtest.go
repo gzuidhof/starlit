@@ -14,12 +14,12 @@ import (
 	"github.com/spf13/afero"
 )
 
-func fixWasmContentTypeMiddleware(ctx *fiber.Ctx) error { 
-			err := ctx.Next()
-			if strings.HasSuffix(ctx.Path(), ".wasm") {
-				ctx.Set("content-type", "application/wasm")
-			}
-			return err
+func fixWasmContentTypeMiddleware(ctx *fiber.Ctx) error {
+	err := ctx.Next()
+	if strings.HasSuffix(ctx.Path(), ".wasm") {
+		ctx.Set("content-type", "application/wasm")
+	}
+	return err
 }
 
 func CreateNBTestApp(serveFolderAbs string, serveFS assetfs.ServeFS, starboardArtifactsFolder string, pyodideArtifactsFolder string) (*fiber.App, error) {
@@ -30,21 +30,19 @@ func CreateNBTestApp(serveFolderAbs string, serveFS assetfs.ServeFS, starboardAr
 
 	err := engine.Load()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not parse templates: %v", err)
 	}
-
-	// engine.Reload(true)
 
 	fs := afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), serveFolderAbs))
 	nbTestHandler := nbtesthandler.NewNBTestHandler(fs, renderer, starboardArtifactsFolder, pyodideArtifactsFolder)
 
 	if starboardArtifactsFolder != "" {
-		app.Use("/static/starboardArtifacts/*", 
-			fixWasmContentTypeMiddleware, 
+		app.Use("/static/starboardArtifacts/*",
+			fixWasmContentTypeMiddleware,
 			filesystem.New(filesystem.Config{
 				Root: afero.NewHttpFs(
 					stripprefix.New("/static/starboardArtifacts/",
-					afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), starboardArtifactsFolder)))),
+						afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), starboardArtifactsFolder)))),
 			}),
 		)
 	}
@@ -55,7 +53,7 @@ func CreateNBTestApp(serveFolderAbs string, serveFS assetfs.ServeFS, starboardAr
 			filesystem.New(filesystem.Config{
 				Root: afero.NewHttpFs(
 					stripprefix.New("/static/pyodideArtifacts/",
-					afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), pyodideArtifactsFolder)))),
+						afero.NewReadOnlyFs(afero.NewBasePathFs(afero.NewOsFs(), pyodideArtifactsFolder)))),
 			}),
 		)
 	}

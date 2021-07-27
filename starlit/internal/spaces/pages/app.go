@@ -38,10 +38,9 @@ func CreateApp(name string, serveFS assetfs.ServeFS, reloadTemplates bool) *fibe
 	engine.AddFunc("renderMarkdown", format.MarkdownToHTML)
 	engine.AddFunc("getVendoredPackage", web.GetVendoredPackage)
 
-	
 	renderer := templaterenderer.NewRenderer(engine)
 	b := NewPagesHandler(name, renderer)
-	if (b.config.GetString("path") == "/") {
+	if b.config.GetString("path") == "/" {
 		app.Get("/:filepath", b.Handle)
 	} else {
 		app.Get("/:filepath?+", b.Handle)

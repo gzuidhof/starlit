@@ -21,9 +21,9 @@ import (
 type NBTestHandler struct {
 	templaterenderer.TemplateRenderer
 	fs afero.Fs
-	
+
 	starboardArtifactsURL string
-	pyodideArtifactsURL string
+	pyodideArtifactsURL   string
 }
 
 func NewNBTestHandler(fs afero.Fs, templateRenderer templaterenderer.TemplateRenderer, starboardArtifactsFolder string, pyodideArtifactsFolder string) *NBTestHandler {
@@ -39,12 +39,11 @@ func NewNBTestHandler(fs afero.Fs, templateRenderer templaterenderer.TemplateRen
 		pyArtifacts = "/static/pyodideArtifacts"
 	}
 
-
 	return &NBTestHandler{
-		TemplateRenderer: templateRenderer,
-		fs: fs,
+		TemplateRenderer:      templateRenderer,
+		fs:                    fs,
 		starboardArtifactsURL: strings.TrimSuffix(sbArtifacts, "/"),
-		pyodideArtifactsURL: pyArtifacts,
+		pyodideArtifactsURL:   pyArtifacts,
 	}
 }
 
@@ -68,13 +67,13 @@ func (h *NBTestHandler) Handle(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).SendString(err.Error())
 	}
 
-	if (page.FrontMatter.GetBool("nbtest.skip")) {
-		return h.Render(c, "views/nbtest/notebook_test_skip", nil)
+	if page.FrontMatter.GetBool("nbtest.skip") {
+		return h.Render(c, "views/nbtest/notebook_test_skip.jet.html", nil)
 	}
 
-	return h.Render(c, "views/nbtest/notebook_test", map[string]interface{} {
-		"notebook_content": page.Content,
+	return h.Render(c, "views/nbtest/notebook_test.jet.html", map[string]interface{}{
+		"notebook_content":        page.Content,
 		"starboard_artifacts_url": h.starboardArtifactsURL,
-		"pyodide_artifacts_url":  h.pyodideArtifactsURL,
+		"pyodide_artifacts_url":   h.pyodideArtifactsURL,
 	})
 }
