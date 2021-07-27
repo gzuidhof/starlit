@@ -1,6 +1,6 @@
 {
     "name": "starlit",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "description": "Starlit - static site generator and other tools for Starboard Notebook",
     "author": "Guido Zuidhof <me@guido.io>",
     "funding": {
