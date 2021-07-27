@@ -28,7 +28,7 @@
         "path": "./bin",
         "url": "https://github.com/gzuidhof/starlit/releases/download/v{{version}}/starlit_{{version}}_{{platform}}_{{arch}}.tar.gz"
     },
-    "devDependencies": {
-        "go-npm": "github:RecuencoJones/go-npm#7e5607f443a0822c4a1a5f2026fb867cac3d40ed"
+    "dependencies": {
+        "go-npm": "@gzuidhof/go-npm"
     }
 }
