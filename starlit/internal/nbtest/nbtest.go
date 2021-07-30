@@ -85,7 +85,14 @@ func TestPath(testPath string) {
 	serverURL := fmt.Sprintf("http://localhost:%s", port)
 
 	go func() {
-		log.Fatal(server.StartNBTestServer(testPath, serveFS, port, getArtifactsFolder("nbtest.starboard_artifacts"), getArtifactsFolder("nbtest.pyodide_artifacts")))
+		log.Fatal(server.StartNBTestServer(
+			testPath,
+			serveFS,
+			port,
+			getArtifactsFolder("nbtest.starboard_artifacts"),
+			getArtifactsFolder("nbtest.pyodide_artifacts"),
+			viper.GetBool("nbtest.cross_origin_isolated"),
+		))
 	}()
 	
 

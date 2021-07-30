@@ -59,6 +59,9 @@ Consider it live-reload for everything that is not defined in Go files :).
 go build && ./starlit.exe nbtest ../../starboard-notebook/src/debugNotebooks --templates_folder web/templates
 ```
 
+### Windows development
+When using the embedded filesystem templates don't get found on Windows platforms, unless they were built on a UNIX-based platform (i.e. downloaded from the Github releases page).
+For local development pass the `--templates_folder web/templates` flag to work around this issue.
 
 ## Releases
 

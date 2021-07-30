@@ -38,6 +38,8 @@ func init() {
 	nbtestCmd.Flags().String("starboard_artifacts", "", "URL prefix of starboard artifacts (perhaps from a dev server on your localhost during local development) or a path to a folder. Defaults to the static assets embedded in the binary or served from the `static_folder` flag")
 	nbtestCmd.Flags().String("pyodide_artifacts", "", "URL prefix of pyodide artifacts (e.g. \"https://cdn.jsdelivr.net/pyodide/v0.17.0/full/\")")
 
+	nbtestCmd.Flags().Bool("cross_origin_isolated", true, "Sets the COOP and COEP headers for served files")
+
 	nbtestCmd.Flags().String("static_folder", "", "Override where static assets are loaded from, it uses the embedded assets if not set")
 	nbtestCmd.Flags().String("templates_folder", "", "Override where templates are loaded from, it uses the embedded assets if not set")
 }
@@ -52,6 +54,7 @@ func bindTestCmdToViper(cmd *cobra.Command, args []string) {
 	viper.BindPFlag("nbtest.timeout", cmd.Flags().Lookup("timeout"))
 	viper.BindPFlag("nbtest.concurrency", cmd.Flags().Lookup("concurrency"))
 	viper.BindPFlag("nbtest.browser_exec_path", cmd.Flags().Lookup("browser_exec_path"))
+	viper.BindPFlag("nbtest.cross_origin_isolated", cmd.Flags().Lookup("cross_origin_isolated"))
 
 	viper.BindPFlag("nbtest.starboard_artifacts", cmd.Flags().Lookup("starboard_artifacts"))
 	viper.BindPFlag("nbtest.pyodide_artifacts", cmd.Flags().Lookup("pyodide_artifacts"))
