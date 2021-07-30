@@ -42,6 +42,8 @@ func init() {
 
 	nbtestCmd.Flags().String("static_folder", "", "Override where static assets are loaded from, it uses the embedded assets if not set")
 	nbtestCmd.Flags().String("templates_folder", "", "Override where templates are loaded from, it uses the embedded assets if not set")
+
+	nbtestCmd.Flags().StringSlice("serve_static", make([]string, 0), "Additional folders to serve in key=value format. For example `--serve_static my-plugin=../my-folder/` will serve the files under `/static/my-plugin/`")
 }
 
 func bindTestCmdToViper(cmd *cobra.Command, args []string) {	
@@ -58,4 +60,5 @@ func bindTestCmdToViper(cmd *cobra.Command, args []string) {
 
 	viper.BindPFlag("nbtest.starboard_artifacts", cmd.Flags().Lookup("starboard_artifacts"))
 	viper.BindPFlag("nbtest.pyodide_artifacts", cmd.Flags().Lookup("pyodide_artifacts"))
+	viper.BindPFlag("nbtest.serve_static", cmd.Flags().Lookup("serve_static"))
 }

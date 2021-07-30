@@ -30,6 +30,10 @@ starlit nbtest --pyodide_artifacts https://cdn.jsdelivr.net/pyodide/v0.17.0/full
 starlit nbtest --starboard_artifacts some/path/to/a/folder
 starlit nbtest --starboard_artifacts http://localhost:9001 some/path  # reminder: cors required!
 starlit nbtest --starboard_artifacts https://cdn.jsdelivr.net/starboard-notebook/v0.12.3/dist some/path
+
+# Serve an additional folder (useful if you are developing a plugin you load dynamically)
+starlit nbtest --serve_static my-plugin-name=./path/to/a/folder
+# The files in that folder are now served under /static/my-plugin-name/
 ```
 
 ### Skipping tests
