@@ -43,4 +43,5 @@ func InitConfig(cfgFile string) {
 
 	viper.Set("root", viper.AllSettings())
 
+	EnsureAtLeastOneSpaceInConfig()
 }

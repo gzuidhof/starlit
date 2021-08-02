@@ -91,12 +91,11 @@ func (h *PagesHandler) Handle(c *fiber.Ctx) error {
 	// }
 
 	
-	pageConfig := config.GetPageConfig(path, h.config, *&page.FrontMatter)
+	pageConfig := config.GetPageConfig(path, h.config, page.FrontMatter)
 	pageConfig.Set("page", *page)
 	pageConfig.Set("menu", h.menu)
 	pageConfig.Set("path", path)
 	templateData := pageConfig.AllSettings()
-
 
 	if page.Type == content.Markdown {
 		return h.renderMarkdownPage(c, templateData)

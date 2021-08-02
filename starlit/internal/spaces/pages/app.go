@@ -40,11 +40,7 @@ func CreateApp(name string, serveFS assetfs.ServeFS, reloadTemplates bool) *fibe
 
 	renderer := templaterenderer.NewRenderer(engine)
 	b := NewPagesHandler(name, renderer)
-	if b.config.GetString("path") == "/" {
-		app.Get("/:filepath", b.Handle)
-	} else {
-		app.Get("/:filepath?+", b.Handle)
-	}
+	app.Get("/:filepath?+", b.Handle)
 	app.Get("/", b.Handle)
 
 	return app

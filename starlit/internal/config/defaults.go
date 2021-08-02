@@ -5,6 +5,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gzuidhof/starlit/starlit/web"
 	"github.com/spf13/viper"
@@ -25,5 +26,15 @@ func setDefaults() {
 	viper.SetDefault("output_folder", "build")
 	viper.SetDefault("server.port", 8585)
 	viper.SetDefault("server.secondary_port", 5742) //star in 1337speak
+}
 
+func EnsureAtLeastOneSpaceInConfig() {
+	if len(viper.GetStringMap("spaces")) == 0 {
+		log.Println("Loading default space on /")
+		viper.Set("spaces.default.path", "/")
+		viper.Set("spaces.default.type", "pages")
+		viper.Set("spaces.default.icon", "bi bi-stars")
+		viper.Set("spaces.default.name", "Home")
+		viper.SetDefault("appbar.enabled", false)
+	}
 }

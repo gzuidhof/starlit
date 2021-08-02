@@ -32,6 +32,7 @@ h4, h5 {
 
 .app main {
     grid-area: main;
+    min-height: 100vh;
 }
 
 .app footer {

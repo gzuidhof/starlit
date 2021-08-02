@@ -5,7 +5,6 @@ package server
 
 import (
 	"log"
-	"sort"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
@@ -13,9 +12,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gzuidhof/starlit/starlit/internal/fs/assetfs"
 	"github.com/gzuidhof/starlit/starlit/internal/fs/stripprefix"
-	"github.com/gzuidhof/starlit/starlit/internal/spaces/pages"
+	"github.com/gzuidhof/starlit/starlit/internal/spaces"
 	"github.com/spf13/afero"
-	"github.com/spf13/viper"
 )
 
 func CreatePrimaryApp(serveFolderAbs string, serveFS assetfs.ServeFS) (*fiber.App, error) {
@@ -28,33 +26,9 @@ func CreatePrimaryApp(serveFolderAbs string, serveFS assetfs.ServeFS) (*fiber.Ap
 		Root: afero.NewHttpFs(stripprefix.New("/static/", serveFS.Static)),
 	}))
 
-	spaces := viper.GetStringMap("spaces")
-	spaceNames := make([]string, len(spaces))
-	i := 0;
-	for k := range spaces {
-		spaceNames[i] = k
-		i++;
-	}
-	sort.Strings(spaceNames)
-
-	spaceNamesReverseOrder := append([]string(nil), spaceNames...)
-	// TODO: this is such a hack. We should order spaces by their weight.
-	sort.Sort(sort.Reverse(sort.StringSlice(spaceNamesReverseOrder)))
-	viper.Set("space_names", spaceNamesReverseOrder)
-
-	for _, appName := range spaceNames {
-		mountPath := viper.GetString("spaces." + appName + ".path")
-		if (mountPath == "") {
-			mountPath = "/" + appName
-			viper.Set("spaces." + appName + ".path", mountPath)
-			log.Printf("No path set for space %s, defaulting to \"%s\"", appName, mountPath)
-		}
-		subApp := pages.CreateApp(appName, serveFS, true)
-
-		log.Printf("Mounting app %s on %s\n", appName, mountPath)
-		app.Mount(mountPath, subApp)
-	}
-
+	spaceApps := spaces.SetupSpaces(serveFS)
+	spaceApps.MountSpacesOnApp(app)
+	
 	return app, nil
 }
 
