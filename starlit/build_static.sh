@@ -1,8 +1,8 @@
 set -e
 
 # Download the npm packages we want to bundle
-go run scripts/download_runtime/main.go starboard-notebook 0.12.3 web/app/static/vendor
-go run scripts/download_runtime/main.go starboard-wrap 0.4.0 web/app/static/vendor
+go run scripts/download_runtime/main.go starboard-notebook 0.13.2 web/app/static/vendor
+go run scripts/download_runtime/main.go starboard-wrap 0.4.1 web/app/static/vendor
 
 # Build web assets
 pushd ./web/app 
